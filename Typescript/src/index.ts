@@ -45,7 +45,8 @@ interface people{
   id:string ; 
   name:string ; 
 } 
-type Peoples ={[key : string ]:people} 
+type Peoples ={[key : string ]:people}  
+
 const userr:Peoples ={
   'abcdd':{id:'iii',name:"ji0erdjf"}
 } 
@@ -66,3 +67,12 @@ console.log(usermap.get('abc'))
 
  
 //exclude
+ //if want exclude from some types from being passe
+type Eventt = 'click' | 'scroll' | 'mousemove';
+type ExcludeEvent = Exclude<Eventt, 'scroll'>; // 'click' | 'mousemove'
+
+const handleEvent = (event: ExcludeEvent) => {
+  console.log(`Handling event: ${event}`);
+};
+
+handleEvent('click'); // OK
