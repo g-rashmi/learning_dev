@@ -1,78 +1,107 @@
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  createdAt: Date;
-}
-//pick help to create new typr from existing type selecting some keys from it
+// interface User {
+//   id: number;
+//   name: string;
+//   email: string;
+//   createdAt: Date;
+// }
+// //pick help to create new typr from existing type selecting some keys from it
 
-type UserProfile = Pick<User, "name" | "email">;
+// type UserProfile = Pick<User, "name" | "email">;
 
-const profile = (user: UserProfile) => {
-  console.log(`${user.name} and ${user.email}`);
-};
+// const profile = (user: UserProfile) => {
+//   console.log(`${user.name} and ${user.email}`);
+// };
  
-//partial 
-//it use same type but marked all optional to its all properties 
+// //partial 
+// //it use same type but marked all optional to its all properties 
  
-type Updateprops = Pick<User,'name'|'email'>  
-type updateoptional =Partial<Updateprops>
+// type Updateprops = Pick<User,'name'|'email'>  
+// type updateoptional =Partial<Updateprops>
   
-function update (u:updateoptional){
-  console.log(u);
-}
+// function update (u:updateoptional){
+//   console.log(u);
+// }
  
-update({name:"r"}) 
+// update({name:"r"}) 
 
-//Readonly 
-//making it readonly configuration then object property will not change  
+// //Readonly 
+// //making it readonly configuration then object property will not change  
 
-interface Config {
-  readonly endpoint: string;
-  readonly apiKey: string;
-}
+// interface Config {
+//   readonly endpoint: string;
+//   readonly apiKey: string;
+// }
 
-const config: Readonly<Config> = {
-  endpoint: 'https://api.example.com',
-  apiKey: 'abcdef123456',
-}; 
-//config.apiKey='llll';->error:connot assign because of readonly ->this is a complile time checking  while const is run time checking 
+// const config: Readonly<Config> = {
+//   endpoint: 'https://api.example.com',
+//   apiKey: 'abcdef123456',
+// }; 
+// //config.apiKey='llll';->error:connot assign because of readonly ->this is a complile time checking  while const is run time checking 
  
 
-//----Record 
-//it give cleaner type to objects 
-interface people{
-  id:string ; 
-  name:string ; 
-} 
-type Peoples ={[key : string ]:people}  
+// //----Record 
+// //it give cleaner type to objects 
+// interface people{
+//   id:string ; 
+//   name:string ; 
+// } 
+// type Peoples ={[key : string ]:people}  
 
-const userr:Peoples ={
-  'abcdd':{id:'iii',name:"ji0erdjf"}
-} 
- //or can use record 
- type Userss = Record<string, people>;
+// const userr:Peoples ={
+//   'abcdd':{id:'iii',name:"ji0erdjf"}
+// } 
+//  //or can use record 
+//  type Userss = Record<string, people>;
 
-const userss: Userss = {
-  'abc123': { id: 'abc123', name: 'John Doe' },
-  'xyz789': { id: 'xyz789', name: 'Jane Doe' },
-};
+// const userss: Userss = {
+//   'abc123': { id: 'abc123', name: 'John Doe' },
+//   'xyz789': { id: 'xyz789', name: 'Jane Doe' },
+// };
 
-console.log(userss['abc123']);  
+// console.log(userss['abc123']);  
 
-// map gives fancier way to deal with objects 
-const usermap = new Map<string , people>() ; 
-usermap.set('abc' ,{id:'j0ij0',name:'john'}) ; 
-console.log(usermap.get('abc')) 
+// // map gives fancier way to deal with objects 
+// const usermap = new Map<string , people>() ; 
+// usermap.set('abc' ,{id:'j0ij0',name:'john'}) ; 
+// console.log(usermap.get('abc')) 
 
  
-//exclude
- //if want exclude from some types from being passe
-type Eventt = 'click' | 'scroll' | 'mousemove';
-type ExcludeEvent = Exclude<Eventt, 'scroll'>; // 'click' | 'mousemove'
+// //exclude
+//  //if want exclude from some types from being passe
+// type Eventt = 'click' | 'scroll' | 'mousemove';
+// type ExcludeEvent = Exclude<Eventt, 'scroll'>; // 'click' | 'mousemove'
 
-const handleEvent = (event: ExcludeEvent) => {
-  console.log(`Handling event: ${event}`);
-};
+// const handleEvent = (event: ExcludeEvent) => {
+//   console.log(`Handling event: ${event}`);
+// };
 
-handleEvent('click'); // OK
+// handleEvent('click'); 
+//zod 
+
+import { z } from 'zod';
+import express from "express";
+
+const app = express();
+
+// Define the schema for profile update
+const userProfileSchema = z.object({
+  name: z.string().min(1, { message: "Name cannot be empty" }),
+  email: z.string().email({ message: "Invalid email format" }),
+  age: z.number().min(18, { message: "You must be at least 18 years old" }).optional(),
+});
+type up= z.infer<typeof userProfileSchema>
+app.put("/user", (req, res) => {
+  const { success } = userProfileSchema.safeParse(req.body);
+  const updateBody:up = req.body; 
+
+  if (!success) {
+    res.status(411).json({});
+    return
+  }
+  // update database here
+  res.json({
+    message: "User updated"
+  })
+});
+
+app.listen(3000);
