@@ -1,8 +1,8 @@
-
-export default function Signup() {
+import Signup from "@/app/components/Signup";
+export default function Sign() {
   return (
     <div>
-      hi from the signup page
+      <Signup/>
     </div>
   );
 }
