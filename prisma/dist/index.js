@@ -9,21 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
-function getTodosAndUserDetails(userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const todos = yield prisma.todo.findMany({
-            where: {
-                user_id: userId,
-            },
-            select: {
-                user: true,
-                title: true,
-                description: true
-            }
-        });
-        console.log(todos);
+const hono_1 = require("hono");
+const edge_1 = require("@prisma/client/edge");
+const extension_accelerate_1 = require("@prisma/extension-accelerate");
+const adapter_1 = require("hono/adapter");
+const app = new hono_1.Hono();
+app.post('/', (c) => __awaiter(void 0, void 0, void 0, function* () {
+    // Todo add zod validation here
+    const body = yield c.req.json();
+    const { DATABASE_URL } = (0, adapter_1.env)(c);
+    const prisma = new edge_1.PrismaClient({
+        datasourceUrl: DATABASE_URL,
+    }).$extends((0, extension_accelerate_1.withAccelerate)());
+    console.log(body);
+    yield prisma.user.create({
+        data: {
+            username: body.email,
+            firstname: body.name,
+            password: body.password
+        }
     });
-}
-getTodosAndUserDetails(1);
+    return c.json({ msg: "as" });
+}));
+exports.default = app;
