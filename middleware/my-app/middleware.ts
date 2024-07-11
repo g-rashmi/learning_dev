@@ -4,6 +4,6 @@ import type { NextRequest } from 'next/server'
 let requestCount = 0;
 export function middleware(request: NextRequest) {
   requestCount++;
-  console.log("njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjumber of requestsppppppppppppp is " + requestCount);
+  console.log("njjumber of requestsppppppppppppp is " + requestCount);
   return  NextResponse.next()
 }
