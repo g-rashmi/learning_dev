@@ -6,10 +6,18 @@
 //   move:string []; 
 // }
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.games = exports.GameManager = void 0;
+exports.GameManager = void 0;
 class GameManager {
+    //
     constructor() {
         this.games = [];
+        this.games = [];
+    }
+    static getInstance() {
+        if (!GameManager.instance) {
+            GameManager.instance = new GameManager();
+        }
+        return GameManager.instance;
     }
     addgame(game) {
         this.games.push(game);
@@ -28,4 +36,3 @@ class GameManager {
     }
 }
 exports.GameManager = GameManager;
-exports.games = new GameManager();
