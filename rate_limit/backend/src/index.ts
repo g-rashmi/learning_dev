@@ -45,7 +45,7 @@ app.post('/generate-otp', otpLimiter, (req, res) => {
 app.post('/reset-password', passwordResetLimiter, async(req, res) => {
     const { email, otp, newPassword ,token} = req.body;
      let formData = new FormData();
-	formData.append('secret', SECRET_KEY);
+	formData.append('secret', SECRET_KEY); 
 	formData.append('response', token);
    const url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'; 
    	const result = await fetch(url, {
